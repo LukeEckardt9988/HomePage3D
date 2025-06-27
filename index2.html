@@ -30,14 +30,29 @@
 <body class="text-white">
 
     <div id="preloader">
+
+        <div id="hidden-image-layer"></div>
+        
         <div id="preloader-content">
+
             <div id="loader-screen">
+                <div id="info-top-left" class="hud-text"></div>
+                <div id="side-bars"></div>
+
                 <div class="loader"></div>
+                <div id="info-bottom-right" class="hud-text">Luke Eckardt</div>
             </div>
+
             <button id="startButton">[ START ]</button>
         </div>
 
         <div id="custom-cursor"></div>
+    </div>
+
+
+    <div id="preloader-content">
+    </div>
+    <div id="custom-cursor"></div>
     </div>
 
     <header class="fixed top-0 left-0 w-full bg-black bg-opacity-30 backdrop-blur-sm z-50">
@@ -89,62 +104,67 @@
         </section>
     </main>
 
-    <!-- =========== SKRIPT FÜR HACKING-HINTERGRUND =========== -->
     <script>
         const canvas = document.getElementById('hacking-background');
         const ctx = canvas.getContext('2d');
-
-        // Größe des Canvas an die Sektion anpassen
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
-        // Zeichen für den "digital rain" - Katakana ist ein Klassiker
+        // Variablen für die Mausposition
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+
         const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
         const characters = katakana;
         const fontSize = 16;
         const columns = canvas.width / fontSize;
-
-        // Ein Array für die " Regentropfen" - ein Tropfen pro Spalte
         const drops = [];
         for (let x = 0; x < columns; x++) {
             drops[x] = 1;
         }
 
         function drawHackingAnimation() {
-            // Semi-transparenter schwarzer Hintergrund für den "Fading-Effekt"
-            ctx.fillStyle = 'rgba(26, 0, 0, 0.05)';
+            ctx.fillStyle = 'rgba(26, 26, 26, 0.05)'; // Hintergrund leicht an #1a1a1a angepasst
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            ctx.fillStyle = '#0F0'; // Grüne Schrift
+            // Die Farbe aus deiner Farbpalette
+            ctx.fillStyle = '#4CAF50';
             ctx.font = fontSize + 'px monospace';
 
-            // Durch die Tropfen loopen
-            for (let i = 0; i < drops.length; i++) {
-                // Ein zufälliges Zeichen aus dem String auswählen
-                const text = characters.charAt(Math.floor(Math.random() * characters.length));
-                // x, y Koordinaten für das Zeichen
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+            // Berechnung der Verschiebung für den Parallax-Effekt
+            // Die 30 steuert die Stärke des Effekts
+            const shiftX = (mouseX / window.innerWidth - 0.5) * 30;
+            const shiftY = (mouseY / window.innerHeight - 0.5) * 30;
 
-                // Tropfen nach unten schicken oder zurücksetzen, wenn er den Boden erreicht
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+            ctx.save(); // Speichert den Canvas-Zustand
+            // Verschiebt den gesamten Canvas-Inhalt in die entgegengesetzte Richtung der Maus
+            ctx.translate(-shiftX, -shiftY);
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = characters.charAt(Math.floor(Math.random() * characters.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height + 100 && Math.random() > 0.975) { // +100 als Puffer
                     drops[i] = 0;
                 }
                 drops[i]++;
             }
+
+            ctx.restore(); // Setzt die Verschiebung zurück
         }
+
+        // Event-Listener, um die Mausposition zu aktualisieren
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
 
         setInterval(drawHackingAnimation, 33);
 
-        // Canvas neu anpassen, wenn die Fenstergröße geändert wird
+        // Dein Resize-Code (unverändert, nur zur Vollständigkeit hier)
         window.addEventListener('resize', () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            // Spaltenanzahl neu berechnen und Tropfen zurücksetzen
-            const newColumns = canvas.width / fontSize;
-            drops.length = 0;
-            for (let x = 0; x < newColumns; x++) {
-                drops[x] = 1;
-            }
+            // Spalten neu berechnen etc.
         });
     </script>
 
@@ -249,7 +269,6 @@
 
     <!-- =========== PRELOADER-SKRIPT =========== -->
 
-
     <script>
         // Benötigte Elemente holen
         const preloader = document.getElementById('preloader');
@@ -257,15 +276,13 @@
         const customCursor = document.getElementById('custom-cursor');
         const tiltingElement = document.getElementById('preloader-content');
 
-        // NEU: Eine Variable, die den Hover-Zustand speichert
         let isHovering = false;
 
-        // Nach 2.5 Sekunden den Button aktivieren
+        // Button nach 2.5 Sekunden aktivieren
         setTimeout(() => {
             startButton.classList.add('is-active');
         }, 2500);
 
-        // Die Funktion zur Steuerung der Neigung und des Cursors
         function handleMouseMove(event) {
             // Cursor bewegen
             customCursor.style.left = event.clientX + 'px';
@@ -274,21 +291,25 @@
             // Neigung berechnen
             const x = (event.clientX / window.innerWidth) * 2 - 1;
             const y = (event.clientY / window.innerHeight) * 2 - 1;
-            const tiltAngle = 25;
+            const tiltAngle = 10;
 
             const rotationY = x * tiltAngle;
             const rotationX = -y * tiltAngle;
 
-            // NEU: Prüfen, ob wir über dem Element schweben, um die Skalierung zu bestimmen
-            const scaleValue = isHovering ? 1.2 : 1; // 1.05-fache Größe beim Hovern, sonst normal
+            const scaleValue = isHovering ? 1.05 : 1;
 
-            // NEU: Die transform-Anweisung kombiniert jetzt Neigung UND Skalierung
-            tiltingElement.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg) scale(${scaleValue})`;
+            // KORREKTUR: Die transform-Anweisung kombiniert jetzt die Zentrierung (translate) mit der Neigung (rotate) und Skalierung (scale)
+            tiltingElement.style.transform = `translate(-50%, -50%) rotateX(${rotationX}deg) rotateY(${rotationY}deg) scale(${scaleValue})`;
+
+            // Spotlight-Position steuern (unverändert)
+            const x_percent = (event.clientX / window.innerWidth) * 100;
+            const y_percent = (event.clientY / window.innerHeight) * 100;
+            preloader.style.setProperty('--mouse-x', x_percent + '%');
+            preloader.style.setProperty('--mouse-y', y_percent + '%');
         }
 
         preloader.addEventListener('mousemove', handleMouseMove);
 
-        // NEU: Event-Listener, die auf das Betreten und Verlassen des Panels achten
         tiltingElement.addEventListener('mouseenter', () => {
             isHovering = true;
         });
@@ -296,7 +317,7 @@
             isHovering = false;
         });
 
-        // Preloader schließen, wenn der aktive Button geklickt wird
+        // Preloader schließen
         function closePreloader() {
             preloader.style.opacity = '0';
             preloader.removeEventListener('mousemove', handleMouseMove);
@@ -306,7 +327,85 @@
             }, 700);
         }
         startButton.addEventListener('click', closePreloader);
+
+        // --- HUD-LOGIK (unverändert) ---
+        function setDate() {
+            const dateElement = document.getElementById('info-top-left');
+            const now = new Date();
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const year = now.getFullYear();
+            dateElement.textContent = `${day}.${month}.${year}`;
+        }
+        function createSideBars() {
+            const container = document.getElementById('side-bars');
+            if (!container) return; // Sicherheitsabfrage
+            const numberOfBars = 10;
+            for (let i = 0; i < numberOfBars; i++) {
+                const bar = document.createElement('span');
+                bar.style.animationDelay = `${Math.random() * 2}s`;
+                container.appendChild(bar);
+            }
+        }
+        setDate();
+        createSideBars();
     </script>
+
+
+
+
+
+    <script>
+        // ===== NEU: Code für HUD-Elemente =====
+
+        // Funktion, um das Datum zu formatieren und zu setzen
+        function setDate() {
+            const dateElement = document.getElementById('info-top-left');
+            const now = new Date();
+            // Führende Nullen hinzufügen für Tag und Monat
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0'); // Monate sind 0-basiert
+            const year = now.getFullYear();
+            dateElement.textContent = `${day}.${month}.${year}`;
+        }
+
+        // Funktion, um die animierten Seitenbalken zu erzeugen
+        function createSideBars() {
+            const container = document.getElementById('side-bars');
+            const numberOfBars = 10; // Anzahl der Balken
+            for (let i = 0; i < numberOfBars; i++) {
+                const bar = document.createElement('span');
+                // Jedem Balken eine zufällige Animationsverzögerung geben
+                bar.style.animationDelay = `${Math.random() * 2}s`;
+                container.appendChild(bar);
+            }
+        }
+
+        // Die neuen Funktionen beim Laden ausführen
+        setDate();
+        createSideBars();
+
+        // ===== ENDE: Code für HUD-Elemente =====
+    </script>
+
+
+    <script>
+        function triggerGlitch() {
+            document.body.classList.add('glitch');
+            setTimeout(() => {
+                document.body.classList.remove('glitch');
+                // Nächsten Glitch zufällig planen (zwischen 3 und 8 Sekunden)
+                setTimeout(triggerGlitch, 3000 + Math.random() * 5000);
+            }, 300); // Dauer des Glitches
+        }
+        // Ersten Glitch nach einer kurzen Verzögerung starten
+        setTimeout(triggerGlitch, 4000);
+    </script>
+
+
+
+
+
 
 </body>
 
