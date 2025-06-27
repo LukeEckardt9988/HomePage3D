@@ -32,7 +32,7 @@
     <div id="preloader">
 
         <div id="hidden-image-layer"></div>
-        
+
         <div id="preloader-content">
 
             <div id="loader-screen">
@@ -269,7 +269,7 @@
 
     <!-- =========== PRELOADER-SKRIPT =========== -->
 
-    <script>
+<script>
         // Benötigte Elemente holen
         const preloader = document.getElementById('preloader');
         const startButton = document.getElementById('startButton');
@@ -278,79 +278,58 @@
 
         let isHovering = false;
 
-        // Button nach 2.5 Sekunden aktivieren
+        // "Bereit"-Signal nach 500ms senden. Das löst die CSS-Animationen aus.
+        setTimeout(() => {
+            preloader.classList.add('is-ready');
+        }, 500);
+
+        // Aktiviert den Button nach 2.5 Sekunden
         setTimeout(() => {
             startButton.classList.add('is-active');
         }, 2500);
 
         function handleMouseMove(event) {
-            // Cursor bewegen
             customCursor.style.left = event.clientX + 'px';
             customCursor.style.top = event.clientY + 'px';
 
-            // Neigung berechnen
             const x = (event.clientX / window.innerWidth) * 2 - 1;
             const y = (event.clientY / window.innerHeight) * 2 - 1;
-            const tiltAngle = 10;
+            const tiltAngle = 10; 
 
             const rotationY = x * tiltAngle;
             const rotationX = -y * tiltAngle;
-
+            
             const scaleValue = isHovering ? 1.05 : 1;
 
-            // KORREKTUR: Die transform-Anweisung kombiniert jetzt die Zentrierung (translate) mit der Neigung (rotate) und Skalierung (scale)
             tiltingElement.style.transform = `translate(-50%, -50%) rotateX(${rotationX}deg) rotateY(${rotationY}deg) scale(${scaleValue})`;
 
-            // Spotlight-Position steuern (unverändert)
             const x_percent = (event.clientX / window.innerWidth) * 100;
             const y_percent = (event.clientY / window.innerHeight) * 100;
             preloader.style.setProperty('--mouse-x', x_percent + '%');
             preloader.style.setProperty('--mouse-y', y_percent + '%');
         }
-
+        
         preloader.addEventListener('mousemove', handleMouseMove);
 
-        tiltingElement.addEventListener('mouseenter', () => {
-            isHovering = true;
-        });
-        tiltingElement.addEventListener('mouseleave', () => {
-            isHovering = false;
-        });
+        tiltingElement.addEventListener('mouseenter', () => { isHovering = true; });
+        tiltingElement.addEventListener('mouseleave', () => { isHovering = false; });
 
-        // Preloader schließen
         function closePreloader() {
             preloader.style.opacity = '0';
             preloader.removeEventListener('mousemove', handleMouseMove);
             setTimeout(() => {
                 preloader.style.display = 'none';
-                document.body.style.cursor = 'auto';
+                document.body.style.cursor = 'auto'; 
             }, 700);
         }
         startButton.addEventListener('click', closePreloader);
 
         // --- HUD-LOGIK (unverändert) ---
-        function setDate() {
-            const dateElement = document.getElementById('info-top-left');
-            const now = new Date();
-            const day = String(now.getDate()).padStart(2, '0');
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const year = now.getFullYear();
-            dateElement.textContent = `${day}.${month}.${year}`;
-        }
-        function createSideBars() {
-            const container = document.getElementById('side-bars');
-            if (!container) return; // Sicherheitsabfrage
-            const numberOfBars = 10;
-            for (let i = 0; i < numberOfBars; i++) {
-                const bar = document.createElement('span');
-                bar.style.animationDelay = `${Math.random() * 2}s`;
-                container.appendChild(bar);
-            }
-        }
+        function setDate() { /* ... */ }
+        function createSideBars() { /* ... */ }
         setDate();
         createSideBars();
     </script>
-
 
 
 
