@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meine Homepage</title>
+
+    <!-- Einbindung von Tailwind CSS für schnelles und responsives Styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts für eine schönere Schriftart -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <!-- Importmap für Three.js -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+
+</head>
+
+<body class="text-white">
+
+    <div id="preloader">
+        <div id="preloader-content">
+            <div id="loader-screen">
+                <div class="loader"></div>
+            </div>
+            <button id="startButton">[ START ]</button>
+        </div>
+
+        <div id="custom-cursor"></div>
+    </div>
+
+    <header class="fixed top-0 left-0 w-full bg-black bg-opacity-30 backdrop-blur-sm z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-xl font-bold">Mein Logo</div>
+            <ul class="flex space-x-6">
+                <li><a href="#home" class="hover:text-red-300 transition-colors">Home</a></li>
+                <li><a href="#about" class="hover:text-red-300 transition-colors">Über Mich</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Die erste Sektion wird zum "position: relative" Container -->
+        <!-- KORREKTUR: Die redundante Hintergrundfarbe bg-[#1a0000] wurde entfernt -->
+        <section id="home" class="relative flex">
+
+            <!-- Das Canvas für die Hintergrundanimation -->
+            <canvas id="hacking-background"></canvas>
+
+            <!-- Linke Spalte mit Text, braucht z-index um über dem Canvas zu sein -->
+            <div class="w-2/3 flex flex-col justify-center min-h-screen p-12 md:p-24 relative z-10">
+                <h1 class="text-5xl md:text-7xl font-black mb-4 leading-tight">
+                    Meine Homepage
+                </h1>
+                <p class="text-lg md:text-xl text-gray-300 max-w-xl">
+                    Willkommen auf meiner persönlichen Seite. Die Figur auf der rechten Seite sollte sich nun
+                    kontinuierlich bewegen.
+                </p>
+            </div>
+
+            <!-- Rechte Spalte, braucht auch z-index -->
+            <div class="w-1/2 relative z-10">
+                <div id="viewer-wrapper">
+                    <div id="viewer-container">
+                        <div id="loading">Lade 3D-Modell...</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="min-h-screen bg-[#110000] py-24 px-12 flex flex-col justify-center">
+            <div class="w-1/2 mx-auto">
+                <h2 class="text-5xl font-bold text-center mb-12">Über Mich</h2>
+                <p class="text-center max-w-3xl mx-auto text-lg md:text-xl text-gray-300">
+                    Die 3D-Figur ist nun nicht mehr sichtbar. Dieser Bereich ist für neue Inhalte reserviert.
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <!-- =========== SKRIPT FÜR HACKING-HINTERGRUND =========== -->
+    <script>
+        const canvas = document.getElementById('hacking-background');
+        const ctx = canvas.getContext('2d');
+
+        // Größe des Canvas an die Sektion anpassen
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Zeichen für den "digital rain" - Katakana ist ein Klassiker
+        const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+        const characters = katakana;
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+
+        // Ein Array für die " Regentropfen" - ein Tropfen pro Spalte
+        const drops = [];
+        for (let x = 0; x < columns; x++) {
+            drops[x] = 1;
+        }
+
+        function drawHackingAnimation() {
+            // Semi-transparenter schwarzer Hintergrund für den "Fading-Effekt"
+            ctx.fillStyle = 'rgba(26, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#0F0'; // Grüne Schrift
+            ctx.font = fontSize + 'px monospace';
+
+            // Durch die Tropfen loopen
+            for (let i = 0; i < drops.length; i++) {
+                // Ein zufälliges Zeichen aus dem String auswählen
+                const text = characters.charAt(Math.floor(Math.random() * characters.length));
+                // x, y Koordinaten für das Zeichen
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                // Tropfen nach unten schicken oder zurücksetzen, wenn er den Boden erreicht
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(drawHackingAnimation, 33);
+
+        // Canvas neu anpassen, wenn die Fenstergröße geändert wird
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            // Spaltenanzahl neu berechnen und Tropfen zurücksetzen
+            const newColumns = canvas.width / fontSize;
+            drops.length = 0;
+            for (let x = 0; x < newColumns; x++) {
+                drops[x] = 1;
+            }
+        });
+    </script>
+
+    <!-- =========== 3D-MODELL SKRIPT (unverändert) =========== -->
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+        const clock = new THREE.Clock();
+        const container = document.getElementById('viewer-container');
+        if (!container) {
+            console.error("3D-Viewer Container nicht gefunden!");
+        } else {
+            const scene = new THREE.Scene();
+            // Der Hintergrund des 3D-Viewers muss jetzt transparent sein
+            scene.background = null;
+            const camera = new THREE.PerspectiveCamera(25, container.clientWidth / container.clientHeight, 0.1, 100);
+            camera.position.set(0, 0.8, 2);
+            // Wichtig: alpha: true macht den Hintergrund des Renderers transparent
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            container.appendChild(renderer.domElement);
+            const controls = new OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.enableRotate = false;
+            controls.enableZoom = false;
+            controls.target.set(-0.3, 0.7, 0);
+            controls.update();
+            const ambientLight = new THREE.AmbientLight(0x888888, 0.3);
+            scene.add(ambientLight);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
+            directionalLight.position.set(5, 10, -5);
+            scene.add(directionalLight);
+            let loadedModel = null;
+            let mouseX = 0;
+            const initialRotationOffsetY = Math.PI / 1.9;
+            let mixer, animationAction;
+
+
+            // Ein Fülllicht von vorne, um die vorderen Schatten aufzuhellen.
+            const frontLight = new THREE.PointLight(0xffffff, 0.5, 20); // Farbe, Intensität, Reichweite
+            frontLight.position.set(0, 2, 5); // x, y, z -> Direkt vor und leicht über dem Modell
+            scene.add(frontLight);
+
+            // Ein farbiges Akzentlicht von links unten für einen coolen, stylischen Look.
+            const bottomLeftLight = new THREE.PointLight(0xffffff, 0.9, 20); // Violettes Licht
+            bottomLeftLight.position.set(-3, -1, 3); // x, y, z -> Links, unten, vorne
+            scene.add(bottomLeftLight);
+
+
+
+            const loader = new GLTFLoader();
+            loader.load('dudeMask.glb', function (gltf) {
+                loadedModel = gltf.scene;
+                const box = new THREE.Box3().setFromObject(loadedModel);
+                const center = box.getCenter(new THREE.Vector3());
+                const size = box.getSize(new THREE.Vector3());
+                const scale = 1.5 / Math.max(size.x, size.y, size.z);
+                loadedModel.scale.set(scale, scale, scale);
+                loadedModel.position.sub(center);
+                scene.add(loadedModel);
+                mixer = new THREE.AnimationMixer(loadedModel);
+                if (gltf.animations && gltf.animations.length > 0) {
+                    animationAction = mixer.clipAction(gltf.animations[0]);
+                    animationAction.play();
+                }
+                const loadingElement = document.getElementById('loading');
+                if (loadingElement) loadingElement.remove();
+                animate();
+            }, undefined, function (error) {
+                console.error('Fehler beim Laden des Modells:', error);
+            });
+
+            function onDocumentMouseMove(event) {
+                mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+            }
+            document.addEventListener('mousemove', onDocumentMouseMove);
+
+            function animate() {
+                requestAnimationFrame(animate);
+                const deltaTime = clock.getDelta();
+                if (mixer) {
+                    mixer.update(deltaTime);
+                }
+                if (loadedModel) { loadedModel.rotation.y = (mouseX * (Math.PI / 4)) + initialRotationOffsetY; }
+                controls.update();
+                renderer.render(scene, camera);
+            }
+
+            const resizeObserver = new ResizeObserver(entries => {
+                for (let entry of entries) {
+                    const { width, height } = entry.contentRect;
+                    camera.aspect = width / height;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(width, height);
+                }
+            });
+            resizeObserver.observe(container);
+        }
+    </script>
+
+    <!-- =========== PRELOADER-SKRIPT =========== -->
+
+
+    <script>
+        // Benötigte Elemente holen
+        const preloader = document.getElementById('preloader');
+        const startButton = document.getElementById('startButton');
+        const customCursor = document.getElementById('custom-cursor');
+        const tiltingElement = document.getElementById('preloader-content');
+
+        // NEU: Eine Variable, die den Hover-Zustand speichert
+        let isHovering = false;
+
+        // Nach 2.5 Sekunden den Button aktivieren
+        setTimeout(() => {
+            startButton.classList.add('is-active');
+        }, 2500);
+
+        // Die Funktion zur Steuerung der Neigung und des Cursors
+        function handleMouseMove(event) {
+            // Cursor bewegen
+            customCursor.style.left = event.clientX + 'px';
+            customCursor.style.top = event.clientY + 'px';
+
+            // Neigung berechnen
+            const x = (event.clientX / window.innerWidth) * 2 - 1;
+            const y = (event.clientY / window.innerHeight) * 2 - 1;
+            const tiltAngle = 25;
+
+            const rotationY = x * tiltAngle;
+            const rotationX = -y * tiltAngle;
+
+            // NEU: Prüfen, ob wir über dem Element schweben, um die Skalierung zu bestimmen
+            const scaleValue = isHovering ? 1.2 : 1; // 1.05-fache Größe beim Hovern, sonst normal
+
+            // NEU: Die transform-Anweisung kombiniert jetzt Neigung UND Skalierung
+            tiltingElement.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg) scale(${scaleValue})`;
+        }
+
+        preloader.addEventListener('mousemove', handleMouseMove);
+
+        // NEU: Event-Listener, die auf das Betreten und Verlassen des Panels achten
+        tiltingElement.addEventListener('mouseenter', () => {
+            isHovering = true;
+        });
+        tiltingElement.addEventListener('mouseleave', () => {
+            isHovering = false;
+        });
+
+        // Preloader schließen, wenn der aktive Button geklickt wird
+        function closePreloader() {
+            preloader.style.opacity = '0';
+            preloader.removeEventListener('mousemove', handleMouseMove);
+            setTimeout(() => {
+                preloader.style.display = 'none';
+                document.body.style.cursor = 'auto';
+            }, 700);
+        }
+        startButton.addEventListener('click', closePreloader);
+    </script>
+
+</body>
+
+</html>

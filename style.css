@@ -1,0 +1,214 @@
+        body,
+        html {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+            /* Hintergrund der ganzen Seite setzen, falls Sektionen Lücken haben */
+            background-color: #1a0000;
+        }
+
+        #viewer-wrapper {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        #viewer-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.9);
+            color: #111;
+            padding: 1em 2em;
+            border-radius: 10px;
+            font-family: sans-serif;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+        }
+
+        /* ============== NEUES CSS FÜR HINTERGRUND-ANIMATION ============== */
+        #hacking-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* z-index: 0 stellt sicher, dass es ganz hinten liegt */
+            z-index: 0;
+        }
+
+
+
+        /* ===== PRELOADER STYLES (FINALE VERSION mit Tilt & Panel-Fixes) ===== */
+
+        /* A) DER ÄUSSERE RAHMEN */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.7s ease-out;
+            cursor: none;
+
+            /* NEU: Perspektive für den 3D-Tilt-Effekt reaktiviert */
+            perspective: 1200px;
+        }
+
+        #custom-cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ABFF00;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 10000;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 10px #ABFF00;
+            transition: transform 0.05s linear;
+        }
+
+        /* B) DER HAUPTCONTAINER ("KARTE") */
+        #preloader-content {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.1s linear;
+        }
+
+        #preloader-content:hover {
+            transform: scale(1.1);
+        }
+
+        /* C) DER BILDSCHIRM */
+        #loader-screen {
+            position: relative;
+            width: 200px;
+
+            /* GEÄNDERT: Hintergrund sichtbarer gemacht und innerer Schein hinzugefügt */
+            background-color: rgba(20, 40, 20, 0.25);
+            box-shadow: 0 0 25px rgba(171, 255, 0, 0.15), inset 0 0 50px rgba(20, 50, 20, 0.3);
+
+            border: 1px solid rgba(171, 255, 0, 0.2);
+            border-bottom: none;
+            border-radius: 12px 12px 0 0;
+            overflow: hidden;
+            animation: extend-screen 1.5s forwards ease-out;
+
+            /* NEU: Die Lücke zum Button wird mit einem negativen Margin geschlossen */
+            margin-bottom: -2px;
+        }
+
+        /* D) DER LOADER (unverändert) */
+        .loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            aspect-ratio: 1;
+            color: #ABFF00;
+            filter: drop-shadow(0 0 4px currentColor) drop-shadow(0 0 12px currentColor);
+            opacity: 0;
+            animation: fade-in-loader 1s forwards ease-in;
+            animation-delay: 1.5s;
+        }
+
+        .loader,
+        .loader::before,
+        .loader::after {
+            display: grid;
+            background: linear-gradient(90deg, currentColor 2px, #0000 0 calc(100% - 2px), currentColor 0) center/100% 14px,
+                linear-gradient(0deg, currentColor 2px, #0000 0 calc(100% - 2px), currentColor 0) center/14px 100%,
+                linear-gradient(currentColor 0 0) center/100% 2px,
+                linear-gradient(currentColor 0 0) center/2px 100%;
+            background-repeat: no-repeat;
+        }
+
+        .loader::before,
+        .loader::after {
+            content: "";
+            grid-area: 1/1;
+            background: inherit;
+            transform-origin: inherit;
+            animation: l6 4s infinite linear;
+        }
+
+        .loader::after {
+            animation-duration: 2s;
+        }
+
+
+        /* E) DER BUTTON (unverändert) */
+        #startButton {
+            padding: 12px 39px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1.2rem;
+            font-weight: bold;
+            letter-spacing: 0.2em;
+            border-radius: 0 0 8px 8px;
+            z-index: 10;
+            transition: all 0.5s ease-in-out;
+            color: #555;
+            background-color: #1a1a1a;
+            border: 1px solid #444;
+            box-shadow: none;
+            filter: none;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        #startButton.is-active {
+            color: #ABFF00;
+            background: none;
+            border: 1px solid #ABFF00;
+            filter: drop-shadow(0 0 4px #ABFF00);
+            box-shadow: 0 0 10px #ABFF00 inset;
+            cursor: none;
+            pointer-events: auto;
+        }
+
+        #startButton.is-active:hover {
+            background-color: rgba(170, 255, 0, 0.088);
+        }
+
+        /* F) DIE KEYFRAME-ANIMATIONEN (unverändert) */
+        @keyframes extend-screen {
+            from {
+                height: 0;
+            }
+
+            to {
+                height: 200px;
+            }
+        }
+
+        @keyframes fade-in-loader {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes l6 {
+            100% {
+                rotate: 1turn;
+            }
+        }
