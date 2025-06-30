@@ -5,17 +5,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Meine Homepage</title>
-
-    <!-- Einbindung von Tailwind CSS für schnelles und responsives Styling -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Google Fonts für eine schönere Schriftart -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
-
-    <!-- Importmap für Three.js -->
     <script type="importmap">
         {
             "imports": {
@@ -24,7 +18,6 @@
             }
         }
     </script>
-
 </head>
 
 <body class="text-white">
@@ -34,27 +27,31 @@
         <div id="hidden-image-layer"></div>
 
         <div id="preloader-content">
-
             <div id="loader-screen">
                 <div id="info-top-left" class="hud-text"></div>
                 <div id="side-bars"></div>
-
                 <div class="loader"></div>
                 <div id="info-bottom-right" class="hud-text">Luke Eckardt</div>
             </div>
-
             <button id="startButton">[ START ]</button>
         </div>
 
+        <div id="orbital-container">
+            <div class="orbit-path"></div>
+            <div class="orbit-arm" id="arm-ausbildung">
+                <div class="hidden-word" data-target="panel-ausbildung">AUSBILDUNG</div>
+            </div>
+            <div class="orbit-arm" id="arm-interessen">
+                <div class="hidden-word" data-target="panel-interessen">INTERESSEN</div>
+            </div>
+            <div class="orbit-arm" id="arm-cybersecurity">
+                <div class="hidden-word" data-target="panel-cybersecurity">CYBERSECURITY</div>
+            </div>
+        </div>
+
         <div id="custom-cursor"></div>
-    </div>
 
-
-    <div id="preloader-content">
     </div>
-    <div id="custom-cursor"></div>
-    </div>
-
     <header class="fixed top-0 left-0 w-full bg-black bg-opacity-30 backdrop-blur-sm z-50">
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
             <div class="text-xl font-bold">Mein Logo</div>
@@ -66,14 +63,8 @@
     </header>
 
     <main>
-        <!-- Die erste Sektion wird zum "position: relative" Container -->
-        <!-- KORREKTUR: Die redundante Hintergrundfarbe bg-[#1a0000] wurde entfernt -->
         <section id="home" class="relative flex">
-
-            <!-- Das Canvas für die Hintergrundanimation -->
             <canvas id="hacking-background"></canvas>
-
-            <!-- Linke Spalte mit Text, braucht z-index um über dem Canvas zu sein -->
             <div class="w-2/3 flex flex-col justify-center min-h-screen p-12 md:p-24 relative z-10">
                 <h1 class="text-5xl md:text-7xl font-black mb-4 leading-tight">
                     Meine Homepage
@@ -83,8 +74,6 @@
                     kontinuierlich bewegen.
                 </p>
             </div>
-
-            <!-- Rechte Spalte, braucht auch z-index -->
             <div class="w-1/2 relative z-10">
                 <div id="viewer-wrapper">
                     <div id="viewer-container">
@@ -93,7 +82,6 @@
                 </div>
             </div>
         </section>
-
         <section id="about" class="min-h-screen bg-[#110000] py-24 px-12 flex flex-col justify-center">
             <div class="w-1/2 mx-auto">
                 <h2 class="text-5xl font-bold text-center mb-12">Über Mich</h2>
@@ -104,87 +92,98 @@
         </section>
     </main>
 
-    <script>
-        const canvas = document.getElementById('hacking-background');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+    <div id="info-panel-overlay" class="hidden">
 
-        // Variablen für die Mausposition
+        <div id="panel-ausbildung" class="info-panel">
+            <div class="panel-header">
+                <span class="header-text">> SYSTEM.INFO: AUSBILDUNG</span>
+                <button class="close-panel-btn">[ SCHLIESSEN ]</button>
+            </div>
+            <div class="panel-content">
+                <p class="content-line">> Status: Zukünftig</p>
+                <p class="content-line">> Beginn der Umschulung: August 2024</p>
+                <p class="content-line">> Fachinformatiker für Anwendungsentwicklung</p>
+                <p class="content-line">> Bildungsträger: Grone Saalfeld</p>
+                <p class="content-line">> Praxispartner: EPSa - SERO Group, Saalfeld</p>
+            </div>
+        </div>
+
+        <div id="panel-interessen" class="info-panel">
+            <div class="panel-header">
+                <span class="header-text">> LOG.FILE: INTERESSEN</span>
+                <button class="close-panel-btn">[ SCHLIESSEN ]</button>
+            </div>
+            <div class="panel-content">
+                <p class="content-line">> Full-Stack Entwicklung</p>
+                <p class="content-line">> Grafikdesign & UI/UX</p>
+                <p class="content-line">> gepr. 3D-Designer seit Sep/22</p>
+            </div>
+        </div>
+
+        <div id="panel-cybersecurity" class="info-panel">
+            <div class="panel-header">
+                <span class="header-text">> SEC.SCAN: CYBERSECURITY</span>
+                <button class="close-panel-btn">[ SCHLIESSEN ]</button>
+            </div>
+            <div class="panel-content">
+                <p class="content-line">> Pentesting & Ethical Hacking</p>
+                <p class="content-line">> Security Operations Center (SOC)</p>
+                <p class="content-line">> gepr. BSI-Grundschutz-Praktiker seit Okt/24</p>
+            </div>
+        </div>
+
+    </div>
+
+
+    <script>
+        const hackingCanvas = document.getElementById('hacking-background');
+        const hackingCtx = hackingCanvas.getContext('2d');
+        hackingCanvas.width = window.innerWidth;
+        hackingCanvas.height = window.innerHeight;
         let mouseX = window.innerWidth / 2;
         let mouseY = window.innerHeight / 2;
-
         const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
         const characters = katakana;
         const fontSize = 16;
-        const columns = canvas.width / fontSize;
+        const columns = hackingCanvas.width / fontSize;
         const drops = [];
-        for (let x = 0; x < columns; x++) {
-            drops[x] = 1;
-        }
+        for (let x = 0; x < columns; x++) drops[x] = 1;
 
         function drawHackingAnimation() {
-            ctx.fillStyle = 'rgba(26, 26, 26, 0.05)'; // Hintergrund leicht an #1a1a1a angepasst
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Die Farbe aus deiner Farbpalette
-            ctx.fillStyle = '#4CAF50';
-            ctx.font = fontSize + 'px monospace';
-
-            // Berechnung der Verschiebung für den Parallax-Effekt
-            // Die 30 steuert die Stärke des Effekts
+            hackingCtx.fillStyle = 'rgba(26, 26, 26, 0.05)';
+            hackingCtx.fillRect(0, 0, hackingCanvas.width, hackingCanvas.height);
+            hackingCtx.fillStyle = '#4CAF50';
+            hackingCtx.font = fontSize + 'px monospace';
             const shiftX = (mouseX / window.innerWidth - 0.5) * 30;
             const shiftY = (mouseY / window.innerHeight - 0.5) * 30;
-
-            ctx.save(); // Speichert den Canvas-Zustand
-            // Verschiebt den gesamten Canvas-Inhalt in die entgegengesetzte Richtung der Maus
-            ctx.translate(-shiftX, -shiftY);
-
+            hackingCtx.save();
+            hackingCtx.translate(-shiftX, -shiftY);
             for (let i = 0; i < drops.length; i++) {
                 const text = characters.charAt(Math.floor(Math.random() * characters.length));
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                if (drops[i] * fontSize > canvas.height + 100 && Math.random() > 0.975) { // +100 als Puffer
-                    drops[i] = 0;
-                }
+                hackingCtx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > hackingCanvas.height + 100 && Math.random() > 0.975) drops[i] = 0;
                 drops[i]++;
             }
-
-            ctx.restore(); // Setzt die Verschiebung zurück
+            hackingCtx.restore();
         }
-
-        // Event-Listener, um die Mausposition zu aktualisieren
-        document.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-        });
-
         setInterval(drawHackingAnimation, 33);
-
-        // Dein Resize-Code (unverändert, nur zur Vollständigkeit hier)
         window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            // Spalten neu berechnen etc.
+            hackingCanvas.width = window.innerWidth;
+            hackingCanvas.height = window.innerHeight;
         });
     </script>
 
-    <!-- =========== 3D-MODELL SKRIPT (unverändert) =========== -->
     <script type="module">
         import * as THREE from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
         import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-
         const clock = new THREE.Clock();
         const container = document.getElementById('viewer-container');
-        if (!container) {
-            console.error("3D-Viewer Container nicht gefunden!");
-        } else {
+        if (container) {
             const scene = new THREE.Scene();
-            // Der Hintergrund des 3D-Viewers muss jetzt transparent sein
             scene.background = null;
             const camera = new THREE.PerspectiveCamera(25, container.clientWidth / container.clientHeight, 0.1, 100);
             camera.position.set(0, 0.8, 2);
-            // Wichtig: alpha: true macht den Hintergrund des Renderers transparent
             const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(container.clientWidth, container.clientHeight);
             container.appendChild(renderer.domElement);
@@ -199,26 +198,18 @@
             const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
             directionalLight.position.set(5, 10, -5);
             scene.add(directionalLight);
+            const frontLight = new THREE.PointLight(0xffffff, 0.5, 20);
+            frontLight.position.set(0, 2, 5);
+            scene.add(frontLight);
+            const bottomLeftLight = new THREE.PointLight(0xffffff, 0.9, 20);
+            bottomLeftLight.position.set(-3, -1, 3);
+            scene.add(bottomLeftLight);
             let loadedModel = null;
-            let mouseX = 0;
+            let modelMouseX = 0;
             const initialRotationOffsetY = Math.PI / 1.9;
             let mixer, animationAction;
-
-
-            // Ein Fülllicht von vorne, um die vorderen Schatten aufzuhellen.
-            const frontLight = new THREE.PointLight(0xffffff, 0.5, 20); // Farbe, Intensität, Reichweite
-            frontLight.position.set(0, 2, 5); // x, y, z -> Direkt vor und leicht über dem Modell
-            scene.add(frontLight);
-
-            // Ein farbiges Akzentlicht von links unten für einen coolen, stylischen Look.
-            const bottomLeftLight = new THREE.PointLight(0xffffff, 0.9, 20); // Violettes Licht
-            bottomLeftLight.position.set(-3, -1, 3); // x, y, z -> Links, unten, vorne
-            scene.add(bottomLeftLight);
-
-
-
             const loader = new GLTFLoader();
-            loader.load('dudeMask.glb', function (gltf) {
+            loader.load('dudeMask.glb', (gltf) => {
                 loadedModel = gltf.scene;
                 const box = new THREE.Box3().setFromObject(loadedModel);
                 const center = box.getCenter(new THREE.Vector3());
@@ -228,164 +219,155 @@
                 loadedModel.position.sub(center);
                 scene.add(loadedModel);
                 mixer = new THREE.AnimationMixer(loadedModel);
-                if (gltf.animations && gltf.animations.length > 0) {
+                if (gltf.animations.length > 0) {
                     animationAction = mixer.clipAction(gltf.animations[0]);
                     animationAction.play();
                 }
                 const loadingElement = document.getElementById('loading');
                 if (loadingElement) loadingElement.remove();
                 animate();
-            }, undefined, function (error) {
-                console.error('Fehler beim Laden des Modells:', error);
             });
-
-            function onDocumentMouseMove(event) {
-                mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-            }
-            document.addEventListener('mousemove', onDocumentMouseMove);
-
+            document.addEventListener('mousemove', (event) => {
+                modelMouseX = (event.clientX / window.innerWidth) * 2 - 1;
+            });
             function animate() {
                 requestAnimationFrame(animate);
                 const deltaTime = clock.getDelta();
-                if (mixer) {
-                    mixer.update(deltaTime);
-                }
-                if (loadedModel) { loadedModel.rotation.y = (mouseX * (Math.PI / 4)) + initialRotationOffsetY; }
+                if (mixer) mixer.update(deltaTime);
+                if (loadedModel) loadedModel.rotation.y = (modelMouseX * (Math.PI / 4)) + initialRotationOffsetY;
                 controls.update();
                 renderer.render(scene, camera);
             }
-
             const resizeObserver = new ResizeObserver(entries => {
                 for (let entry of entries) {
                     const { width, height } = entry.contentRect;
-                    camera.aspect = width / height;
-                    camera.updateProjectionMatrix();
-                    renderer.setSize(width, height);
+                    if (width > 0 && height > 0) {
+                        camera.aspect = width / height;
+                        camera.updateProjectionMatrix();
+                        renderer.setSize(width, height);
+                    }
                 }
             });
             resizeObserver.observe(container);
         }
     </script>
 
-    <!-- =========== PRELOADER-SKRIPT =========== -->
-
-<script>
-        // Benötigte Elemente holen
-        const preloader = document.getElementById('preloader');
-        const startButton = document.getElementById('startButton');
-        const customCursor = document.getElementById('custom-cursor');
-        const tiltingElement = document.getElementById('preloader-content');
-
-        let isHovering = false;
-
-        // "Bereit"-Signal nach 500ms senden. Das löst die CSS-Animationen aus.
-        setTimeout(() => {
-            preloader.classList.add('is-ready');
-        }, 500);
-
-        // Aktiviert den Button nach 2.5 Sekunden
-        setTimeout(() => {
-            startButton.classList.add('is-active');
-        }, 2500);
-
-        function handleMouseMove(event) {
-            customCursor.style.left = event.clientX + 'px';
-            customCursor.style.top = event.clientY + 'px';
-
-            const x = (event.clientX / window.innerWidth) * 2 - 1;
-            const y = (event.clientY / window.innerHeight) * 2 - 1;
-            const tiltAngle = 10; 
-
-            const rotationY = x * tiltAngle;
-            const rotationX = -y * tiltAngle;
-            
-            const scaleValue = isHovering ? 1.05 : 1;
-
-            tiltingElement.style.transform = `translate(-50%, -50%) rotateX(${rotationX}deg) rotateY(${rotationY}deg) scale(${scaleValue})`;
-
-            const x_percent = (event.clientX / window.innerWidth) * 100;
-            const y_percent = (event.clientY / window.innerHeight) * 100;
-            preloader.style.setProperty('--mouse-x', x_percent + '%');
-            preloader.style.setProperty('--mouse-y', y_percent + '%');
-        }
-        
-        preloader.addEventListener('mousemove', handleMouseMove);
-
-        tiltingElement.addEventListener('mouseenter', () => { isHovering = true; });
-        tiltingElement.addEventListener('mouseleave', () => { isHovering = false; });
-
-        function closePreloader() {
-            preloader.style.opacity = '0';
-            preloader.removeEventListener('mousemove', handleMouseMove);
-            setTimeout(() => {
-                preloader.style.display = 'none';
-                document.body.style.cursor = 'auto'; 
-            }, 700);
-        }
-        startButton.addEventListener('click', closePreloader);
-
-        // --- HUD-LOGIK (unverändert) ---
-        function setDate() { /* ... */ }
-        function createSideBars() { /* ... */ }
-        setDate();
-        createSideBars();
-    </script>
-
-
-
-
     <script>
-        // ===== NEU: Code für HUD-Elemente =====
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- TEIL 1: PRELOADER-STEUERUNG (unverändert) ---
+            const preloader = document.getElementById('preloader');
+            const startButton = document.getElementById('startButton');
+            const customCursor = document.getElementById('custom-cursor');
+            const tiltingElement = document.getElementById('preloader-content');
+            const tiltAngle = 10;
+            let isHovering = false;
 
-        // Funktion, um das Datum zu formatieren und zu setzen
-        function setDate() {
-            const dateElement = document.getElementById('info-top-left');
-            const now = new Date();
-            // Führende Nullen hinzufügen für Tag und Monat
-            const day = String(now.getDate()).padStart(2, '0');
-            const month = String(now.getMonth() + 1).padStart(2, '0'); // Monate sind 0-basiert
-            const year = now.getFullYear();
-            dateElement.textContent = `${day}.${month}.${year}`;
-        }
+            setTimeout(() => preloader.classList.add('is-ready'), 500);
+            setTimeout(() => startButton.classList.add('is-active'), 2500);
 
-        // Funktion, um die animierten Seitenbalken zu erzeugen
-        function createSideBars() {
-            const container = document.getElementById('side-bars');
-            const numberOfBars = 10; // Anzahl der Balken
-            for (let i = 0; i < numberOfBars; i++) {
-                const bar = document.createElement('span');
-                // Jedem Balken eine zufällige Animationsverzögerung geben
-                bar.style.animationDelay = `${Math.random() * 2}s`;
-                container.appendChild(bar);
+            function handleMouseMove(event) {
+                mouseX = event.clientX;
+                mouseY = event.clientY;
+                customCursor.style.left = mouseX + 'px';
+                customCursor.style.top = mouseY + 'px';
+                const x = (mouseX / window.innerWidth) * 2 - 1;
+                const y = (mouseY / window.innerHeight) * 2 - 1;
+                const rotationY = x * tiltAngle;
+                const rotationX = -y * tiltAngle;
+                const scaleValue = isHovering ? 1.05 : 1;
+                tiltingElement.style.transform = `translate(-50%, -50%) rotateX(${rotationX}deg) rotateY(${rotationY}deg) scale(${scaleValue})`;
+                const x_percent = (mouseX / window.innerWidth) * 100;
+                const y_percent = (mouseY / window.innerHeight) * 100;
+                preloader.style.setProperty('--mouse-x', x_percent + '%');
+                preloader.style.setProperty('--mouse-y', y_percent + '%');
             }
-        }
 
-        // Die neuen Funktionen beim Laden ausführen
-        setDate();
-        createSideBars();
+            preloader.addEventListener('mousemove', handleMouseMove);
+            tiltingElement.addEventListener('mouseenter', () => isHovering = true);
+            tiltingElement.addEventListener('mouseleave', () => isHovering = false);
 
-        // ===== ENDE: Code für HUD-Elemente =====
+            function closePreloader() {
+                preloader.style.opacity = '0';
+                preloader.removeEventListener('mousemove', handleMouseMove);
+                setTimeout(() => {
+                    preloader.style.display = 'none';
+                    document.body.style.cursor = 'auto';
+                }, 1000);
+            }
+            startButton.addEventListener('click', closePreloader);
+
+            // --- TEIL 2: PANEL & ORBITAL LOGIK (REPARIERT) ---
+            const panelOverlay = document.getElementById('info-panel-overlay');
+            const closeButtons = document.querySelectorAll('.close-panel-btn');
+            const hiddenWords = document.querySelectorAll('.hidden-word');
+
+            const openPanel = (targetId) => {
+                const panel = document.getElementById(targetId);
+                if (panel) {
+                    panelOverlay.classList.remove('hidden');
+                    setTimeout(() => {
+                        panelOverlay.classList.add('visible');
+                        panel.classList.add('visible');
+                    }, 50);
+                }
+            };
+
+            const closeAllPanels = () => {
+                panelOverlay.classList.remove('visible');
+                document.querySelectorAll('.info-panel.visible').forEach(panel => {
+                    panel.classList.remove('visible');
+                });
+                setTimeout(() => panelOverlay.classList.add('hidden'), 500);
+            };
+
+            hiddenWords.forEach(wordContainer => {
+                wordContainer.addEventListener('click', () => {
+                    const targetPanelId = wordContainer.getAttribute('data-target');
+                    openPanel(targetPanelId);
+                });
+            });
+
+            closeButtons.forEach(button => button.addEventListener('click', closeAllPanels));
+            panelOverlay.addEventListener('click', (event) => {
+                if (event.target === panelOverlay) closeAllPanels();
+            });
+
+            // --- TEIL 3: HUD-ELEMENTE & GLITCH (wird jetzt wieder ausgeführt) ---
+            function setDate() {
+                const dateElement = document.getElementById('info-top-left');
+                if (dateElement) {
+                    const now = new Date();
+                    const day = String(now.getDate()).padStart(2, '0');
+                    const month = String(now.getMonth() + 1).padStart(2, '0');
+                    const year = now.getFullYear();
+                    dateElement.textContent = `${day}.${month}.${year}`;
+                }
+            }
+            function createSideBars() {
+                const container = document.getElementById('side-bars');
+                if (container) {
+                    // Leert den Container, falls die Funktion mehrfach aufgerufen wird
+                    container.innerHTML = '';
+                    for (let i = 0; i < 10; i++) {
+                        const bar = document.createElement('span');
+                        bar.style.animationDelay = `${Math.random() * 2}s`;
+                        container.appendChild(bar);
+                    }
+                }
+            }
+            setDate();
+            createSideBars();
+
+            function triggerGlitch() {
+                document.body.classList.add('glitch');
+                setTimeout(() => {
+                    document.body.classList.remove('glitch');
+                    setTimeout(triggerGlitch, 3000 + Math.random() * 5000);
+                }, 300);
+            }
+            setTimeout(triggerGlitch, 4000);
+        });
     </script>
-
-
-    <script>
-        function triggerGlitch() {
-            document.body.classList.add('glitch');
-            setTimeout(() => {
-                document.body.classList.remove('glitch');
-                // Nächsten Glitch zufällig planen (zwischen 3 und 8 Sekunden)
-                setTimeout(triggerGlitch, 3000 + Math.random() * 5000);
-            }, 300); // Dauer des Glitches
-        }
-        // Ersten Glitch nach einer kurzen Verzögerung starten
-        setTimeout(triggerGlitch, 4000);
-    </script>
-
-
-
-
-
-
 </body>
 
 </html>

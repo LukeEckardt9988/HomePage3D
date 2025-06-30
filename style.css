@@ -3,6 +3,7 @@
 /* ================================================================== */
 
 /* --- ALLGEMEINE SEITEN-STYLES --- */
+/* Grundlegende Stile für die gesamte Seite, inklusive Schriftart und Hintergrund. */
 body,
 html {
     font-family: 'Inter', sans-serif;
@@ -10,20 +11,24 @@ html {
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
     background-color: #1a1a1a;
+    scrollbar-width: none;
 }
 
+/* Container für das 3D-Modell, sorgt dafür, dass es beim Scrollen an Ort und Stelle bleibt. */
 #viewer-wrapper {
     position: sticky;
     top: 0;
     height: 100vh;
 }
 
+/* Der eigentliche Container, in den die 3D-Szene gerendert wird. */
 #viewer-container {
     width: 100%;
     height: 100%;
     position: relative;
 }
 
+/* "Lade..."-Anzeige für das 3D-Modell. */
 #loading {
     position: absolute;
     top: 50%;
@@ -38,6 +43,7 @@ html {
     z-index: 100;
 }
 
+/* Canvas-Element für den Matrix-ähnlichen Hintergrundeffekt. */
 #hacking-background {
     position: absolute;
     top: 0;
@@ -48,8 +54,11 @@ html {
 }
 
 
-/* ===== PRELOADER STYLES ===== */
-/* ===== PRELOADER STYLES (FINALE, KORRIGIERTE MASTER-VERSION) ===== */
+/* ================================================================== */
+/* ===                     PRELOADER-STYLES (SKALIERT)            === */
+/* ================================================================== */
+
+/* Hauptcontainer für den Preloader, bedeckt die gesamte Seite. */
 #preloader {
     position: fixed;
     top: 0;
@@ -57,17 +66,16 @@ html {
     width: 100%;
     height: 100%;
     z-index: 9999;
-    transition: opacity 0.7s ease-out;
+    transition: opacity 1s ease-out;
     cursor: none;
     perspective: 1200px;
-
     --mouse-x: 50%;
     --mouse-y: 50%;
-    background: radial-gradient(circle at var(--mouse-x) var(--mouse-y),
-            #2a2a2a 0%,
-            #1a1a1a 25%);
+    background-color: #041304;
+    transition: background 2s, opacity 1s ease-out;
 }
 
+/* Container für alle sichtbaren Inhalte des Preloaders (wird gekippt). */
 #preloader-content {
     position: absolute;
     top: 50%;
@@ -77,84 +85,36 @@ html {
     flex-direction: column;
     align-items: center;
     transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    z-index: 2;
-    background-color: #1a1a1a;
-    box-shadow: 0 0 50px rgba(0, 255, 174, 0.038);
-    border-radius: 12px;
-}
-
-
-/* Ersetze deine #custom-cursor Regel... */
-#custom-cursor {
-    width: 20px;
-    height: 20px;
-    border: 2px solid #4CAF50;
-    border-radius: 50%;
-    position: fixed;
-    pointer-events: none;
-    z-index: 10000;
-    transform: translate(-50%, -50%);
-    box-shadow: 0 0 10px #4CAF50;
+    z-index: 2; /* Liegt über dem Orbit-Pfad, aber unter den Wörtern */
     
-    /* WICHTIG: Startet standardmäßig unsichtbar */
-    opacity: 0;
+    /* NEU: WICHTIG - Container selbst fängt keine Klicks ab */
+    pointer-events: none; 
 }
 
-/* NEU: Diese Regel startet die Animation, SOBALD der Preloader "bereit" ist */
-#preloader.is-ready #custom-cursor {
-    /* Die Animation blendet den Cursor über 2 Sekunden ein */
-    animation: fade-in-cursor 2s forwards;
-}
-
-/* Die Keyframes für den Fade-in (bitte sicherstellen, dass sie existiert) */
-@keyframes fade-in-cursor {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-/* Der Rest deines Preloader-CSS bleibt unverändert... */
-
-/* B) VERSTECKTES HINTERGRUNDBILD */
-#hidden-image-layer {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 1;
-    pointer-events: none;
-
-    /* WICHTIG: Ersetze dies mit dem Pfad zu deinem Bild! */
-    background-image: url(423529.jpg);
-    background-size: cover;
-    background-position: center center;
-
-    /* Die Maske, die dem Maus-Spotlight folgt */
-    /* NACHHER (die korrekte Version) */
-    -webkit-mask-image: radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(0, 0, 0, 0.2) 5%, transparent 25%);
-    mask-image: radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(0, 0, 0, 0.1) 5%, transparent 25%);
+/* Sorgen dafür, dass die Inhalte im Panel klickbar bleiben */
+#loader-screen, #startButton {
+    pointer-events: auto;
 }
 
 
-
-
+/* Der Ladebildschirm-Kasten, der sich ausfährt. */
 #loader-screen {
     position: relative;
-    width: 220px;
+    width: 330px;
+    /* Skaliert: 220px -> 330px */
     background-color: rgba(76, 175, 80, 0.1);
-    box-shadow: 0 0 25px rgba(76, 175, 80, 0.1), inset 0 0 50px rgba(76, 175, 80, 0.15);
+    box-shadow: 0 0 38px rgba(76, 175, 80, 0.1), inset 0 0 75px rgba(76, 175, 80, 0.15);
+    /* Skaliert */
     border: 1px solid rgba(76, 175, 80, 0.2);
     border-bottom: none;
-    border-radius: 12px 12px 0 0;
+    border-radius: 18px 18px 0 0;
+    /* Skaliert */
     overflow: hidden;
     animation: extend-screen 1.5s forwards ease-out;
     margin-bottom: -2px;
 }
 
+/* Rauschen-Effekt für den Ladebildschirm. */
 #loader-screen::after {
     content: "";
     position: absolute;
@@ -169,14 +129,19 @@ html {
     animation: noise-animation 0.5s infinite steps(1);
 }
 
+/* Der Start-Button. */
 #startButton {
-    width: 220px;
-    padding: 10px 30px;
+    width: 330px;
+    /* Skaliert: 220px -> 330px */
+    padding: 15px 45px;
+    /* Skaliert: 10px 30px -> 15px 45px */
     font-family: 'Inter', sans-serif;
-    font-size: 1.2rem;
+    font-size: 1.8rem;
+    /* Skaliert: 1.2rem -> 1.8rem */
     font-weight: bold;
     letter-spacing: 0.2em;
-    border-radius: 0 0 12px 12px;
+    border-radius: 0 0 18px 18px;
+    /* Skaliert */
     z-index: 10;
     transition: all 0.5s ease-in-out;
     color: #9E9E9E;
@@ -188,47 +153,59 @@ html {
     pointer-events: none;
 }
 
-/* D) HUD DEKO-ELEMENTE & CURSOR */
+/* Stil für die kleinen HUD-Texte (Datum, Name). */
 .hud-text {
     position: absolute;
     font-family: 'Courier New', Courier, monospace;
     color: #4CAF50;
     opacity: 0.7;
-    font-size: 0.8rem;
-    text-shadow: 0 0 5px #4CAF50;
+    font-size: 1.2rem;
+    /* Skaliert: 0.8rem -> 1.2rem */
+    text-shadow: 0 0 8px #4CAF50;
+    /* Skaliert: 5px -> 8px */
     z-index: 5;
 }
 
 #info-top-left {
-    top: 10px;
-    left: 15px;
+    top: 15px;
+    /* Skaliert: 10px -> 15px */
+    left: 22px;
+    /* Skaliert: 15px -> 22px */
 }
 
 #info-bottom-right {
-    bottom: 10px;
-    right: 15px;
+    bottom: 15px;
+    /* Skaliert: 10px -> 15px */
+    right: 22px;
+    /* Skaliert: 15px -> 22px */
 }
 
+/* Container für die animierten Seitenbalken. */
 #side-bars {
     position: absolute;
-    top: 50px;
-    left: 15px;
-    width: 20px;
-    height: 100px;
+    top: 75px;
+    /* Skaliert: 50px -> 75px */
+    left: 22px;
+    /* Skaliert: 15px -> 22px */
+    width: 30px;
+    /* Skaliert: 20px -> 30px */
+    height: 150px;
+    /* Skaliert: 100px -> 150px */
 }
 
+/* Einzelne Balken der Seitenleiste. */
 #side-bars span {
     display: block;
     width: 100%;
-    height: 3px;
-    margin-bottom: 4px;
+    height: 4px;
+    /* Skaliert: 3px -> 4px */
+    margin-bottom: 6px;
+    /* Skaliert: 4px -> 6px */
     background-color: #4CAF50;
     animation: side-bar-flicker 2s infinite linear;
 }
 
-
-
-/* E) LOADER & BUTTON AKTIVIERUNG */
+/* Die Ladebalken-Animation im Inneren des Ladebildschirms. */
 .loader {
     color: #4CAF50;
     position: absolute;
@@ -236,13 +213,18 @@ html {
     left: 50%;
     transform: translate(-50%, -50%);
     opacity: 0;
-    width: 80px;
-    height: 40px;
-    border: 2px solid currentColor;
+    width: 120px;
+    /* Skaliert: 80px -> 120px */
+    height: 60px;
+    /* Skaliert: 40px -> 60px */
+    border: 3px solid currentColor;
+    /* Skaliert: 2px -> 3px */
     border-right-color: transparent;
-    padding: 3px;
+    padding: 5px;
+    /* Skaliert: 3px -> 5px */
     background:
-        repeating-linear-gradient(90deg, currentColor 0 10px, #0000 0 15px) 0/0% no-repeat content-box content-box;
+        repeating-linear-gradient(90deg, currentColor 0 15px, #0000 0 22px) 0/0% no-repeat content-box content-box;
+    /* Skaliert */
     box-sizing: border-box;
     animation:
         fade-in-loader 1s forwards 1.5s,
@@ -252,23 +234,30 @@ html {
 .loader::before {
     content: "";
     position: absolute;
-    top: -2px;
-    bottom: -2px;
+    top: -3px;
+    /* Skaliert */
+    bottom: -3px;
+    /* Skaliert */
     left: 100%;
-    width: 10px;
+    width: 15px;
+    /* Skaliert */
     background:
-        linear-gradient(#0000 calc(50% - 7px), currentColor 0 calc(50% - 5px), #0000 0 calc(50% + 5px), currentColor 0 calc(50% + 7px), #0000 0) left /100% 100%,
-        linear-gradient(currentColor calc(50% - 5px), #0000 0 calc(50% + 5px), currentColor 0) left /2px 100%,
-        linear-gradient(#0000 calc(50% - 5px), currentColor 0 calc(50% + 5px), #0000 0) right/2px 100%;
+        linear-gradient(#0000 calc(50% - 11px), currentColor 0 calc(50% - 8px), #0000 0 calc(50% + 8px), currentColor 0 calc(50% + 11px), #0000 0) left /100% 100%,
+        linear-gradient(currentColor calc(50% - 8px), #0000 0 calc(50% + 8px), currentColor 0) left /3px 100%,
+        linear-gradient(#0000 calc(50% - 8px), currentColor 0 calc(50% + 8px), #0000 0) right/3px 100%;
+    /* Skaliert */
     background-repeat: no-repeat;
 }
 
+/* Stile für den Start-Button, wenn er aktiv wird. */
 #startButton.is-active {
     color: #4CAF50;
     background: none;
     border: 1px solid #4CAF50;
-    filter: drop-shadow(0 0 4px #4CAF50);
-    box-shadow: 0 0 10px #4CAF50 inset;
+    filter: drop-shadow(0 0 6px #4CAF50);
+    /* Skaliert: 4px -> 6px */
+    box-shadow: 0 0 15px #4CAF50 inset;
+    /* Skaliert: 10px -> 15px */
     cursor: none;
     pointer-events: auto;
 }
@@ -278,17 +267,147 @@ html {
     transform: scale(1.05);
 }
 
-/* F) KEYFRAMES */
+
+/* ================================================================== */
+/* ===                   ANIMIERTER CURSOR                        === */
+/* ================================================================== */
+
+/* Hauptcontainer des Cursors, der der Maus folgt. */
+#custom-cursor {
+    position: fixed;
+    pointer-events: none;
+    /* Sorgt dafür, dass man durch den Cursor klicken kann */
+    z-index: 10000;
+    transform: translate(-50%, -50%);
+    /* Zentriert den Cursor auf der Mausposition */
+    opacity: 0;
+    /* Startet unsichtbar */
+    transition: opacity 0.5s ease-in-out;
+    /* Weiches Einblenden */
+}
+
+/* Blendet den Cursor ein, wenn der Preloader bereit ist. */
+#preloader.is-ready #custom-cursor {
+    opacity: 1;
+}
+
+/* Basis-Stil des Cursors (der mittlere Punkt). */
+#custom-cursor {
+    width: 40px;
+    aspect-ratio: 1;
+    color: #4CAF50;
+    /* Deine Hauptfarbe */
+    position: relative;
+    background: radial-gradient(10px, currentColor 94%, #0000);
+    filter: drop-shadow(0 0 5px #4CAF50);
+    /* Leuchteffekt für das ganze Element */
+}
+
+/* Die vier rotierenden Satelliten des Cursors. */
+#custom-cursor:before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background:
+        radial-gradient(9px at bottom right, #0000 94%, currentColor) top left,
+        radial-gradient(9px at bottom left, #0000 94%, currentColor) top right,
+        radial-gradient(9px at top right, #0000 94%, currentColor) bottom left,
+        radial-gradient(9px at top left, #0000 94%, currentColor) bottom right;
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    animation: l18 1.5s infinite cubic-bezier(0.1, -0.7, 0, 0.2);
+}
+
+
+/* ================================================================== */
+/* ===               HINTERGRUND- & GLITCH-EFFEKTE                === */
+/* ================================================================== */
+
+/* Versteckte Ebene, die durch die Mausmaske als "Taschenlampen"-Effekt sichtbar wird. */
+#hidden-image-layer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+    pointer-events: none;
+    background-image: url(preLoaderBackground.png);
+    background-size: cover;
+    background-position: center center;
+    -webkit-mask-image: radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(0, 0, 0, 0.294) 20%, transparent 20%);
+    mask-image: radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(0, 0, 0, 0.59) 10%, transparent 40%);
+    opacity: 0;
+    transition: opacity 2s;
+}
+
+#preloader.is-ready #hidden-image-layer {
+    opacity: 1;
+}
+
+/* Globaler Glitch-Effekt, der über allem liegt. */
+body.glitch::before,
+body.glitch::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #1a1a1a;
+    z-index: 99999;
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+body.glitch::before {
+    animation: glitch-anim-1 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+}
+
+body.glitch::after {
+    animation: glitch-anim-2 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both infinite;
+}
+
+
+/* ================================================================== */
+/* ===                       KEYFRAMES (ANIMATIONEN)              === */
+/* ================================================================== */
+
+/* Animation für den Cursor. */
+@keyframes l18 {
+    33% {
+        color: #4CAF50;
+        inset: -10px;
+        transform: rotate(0deg);
+    }
+
+    66% {
+        color: #4caf4f6d;
+        inset: -10px;
+        transform: rotate(90deg);
+    }
+
+    100% {
+        color: #4caf4f28;
+        inset: 0;
+        transform: rotate(90deg);
+    }
+}
+
+/* Animation, die den Ladebildschirm ausfährt. */
 @keyframes extend-screen {
     from {
         height: 0;
     }
 
     to {
-        height: 220px;
+        height: 330px;
+        /* Skaliert: 220px -> 330px */
     }
 }
 
+/* Blendet den internen Ladebalken ein. */
 @keyframes fade-in-loader {
     from {
         opacity: 0;
@@ -299,12 +418,14 @@ html {
     }
 }
 
+/* Animation für den internen Ladebalken. */
 @keyframes l5 {
     100% {
         background-size: 120%;
     }
 }
 
+/* Flackern der Seitenbalken. */
 @keyframes side-bar-flicker {
     0% {
         opacity: 0.3;
@@ -319,6 +440,7 @@ html {
     }
 }
 
+/* Rauschen-Effekt des Ladebildschirms. */
 @keyframes noise-animation {
     0% {
         transform: translateX(0);
@@ -345,29 +467,7 @@ html {
     }
 }
 
-/* G) GLOBALER GLITCH-EFFEKT */
-body.glitch::before,
-body.glitch::after {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: #1a1a1a;
-    z-index: 99999;
-    opacity: 0.7;
-    pointer-events: none;
-}
-
-body.glitch::before {
-    animation: glitch-anim-1 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
-}
-
-body.glitch::after {
-    animation: glitch-anim-2 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both infinite;
-}
-
+/* Animationen für den globalen Glitch-Effekt. */
 @keyframes glitch-anim-1 {
     0% {
         clip-path: inset(30% 0 60% 0);
@@ -418,4 +518,213 @@ body.glitch::after {
     100% {
         clip-path: inset(70% 0 20% 0);
     }
+}
+
+/* ================================================================== */
+/* ===                ORBITAL-SYSTEM FÜR HIDDEN WORDS             === */
+/* ================================================================== */
+
+/* Hauptcontainer für das gesamte Orbit-System. Liegt in der Mitte. */
+#orbital-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px; 
+    height: 600px;
+    pointer-events: none;
+    
+    z-index: 3; 
+    
+    opacity: 0;
+    transition: opacity 2s ease-in-out;
+}
+
+#preloader.is-ready #orbital-container {
+    opacity: 1;
+}
+
+/* Der sichtbare Kreis, der die Umlaufbahn darstellt. */
+.orbit-path {
+    width: 100%;
+    height: 100%;
+    border: 1px dashed #4caf4f22; /* Hauchdünne, gestrichelte Linie */
+    border-radius: 50%;
+}
+
+/* Der unsichtbare "Arm", der sich dreht. */
+.orbit-arm {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    animation: rotate-orbit 30s linear infinite; /* Die Rotationsanimation */
+}
+
+/* Position und Stil des eigentlichen Wortes am Ende des Arms. */
+.hidden-word {
+    position: absolute;
+    top: -15px; /* Positioniert das Wort vertikal mittig zum Arm-Ende */
+    left: 100%; /* Positioniert das Wort am äußeren Rand des Arms */
+    transform: translateX(-50%); /* Zentriert das Wort über seinem Punkt */
+    
+    color: #4CAF50;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.2rem;
+    text-shadow: 0 0 10px #4CAF50;
+    padding: 5px 10px;
+    pointer-events: auto;
+    cursor: none;
+    transition: all 0.3s ease-in-out;
+    
+    /* Wichtig: Hält das Wort aufrecht, während sich der Arm dreht! */
+    animation: counteract-rotation 30s linear infinite;
+}
+
+.hidden-word:hover {
+    transform: translateX(-50%) scale(1.15); /* Vergrößert sich beim Hover */
+    background-color: #4caf4f22;
+    border-radius: 4px;
+}
+
+/* Der Punkt vor jedem Wort, der der Linie folgt. */
+.hidden-word::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -5px; /* Positioniert den Punkt links vom Wort */
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    background-color: #4CAF50;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #4CAF50, 0 0 20px #4CAF50; /* Starker Glow für den Punkt */
+}
+
+
+/* Unterschiedliche Startpunkte und Geschwindigkeiten für jeden Arm */
+#arm-interessen {
+    animation-duration: 25s; /* Etwas schneller */
+    animation-delay: -10s;  /* Startet an einer anderen Position */
+}
+#arm-interessen .hidden-word {
+    animation-duration: 25s;
+    animation-delay: -10s;
+}
+
+#arm-cybersecurity {
+    animation-duration: 35s; /* Etwas langsamer */
+    animation-delay: -20s; /* Startet wieder woanders */
+}
+#arm-cybersecurity .hidden-word {
+    animation-duration: 35s;
+    animation-delay: -20s;
+}
+
+/* Keyframes für die Rotation der Arme */
+@keyframes rotate-orbit {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Keyframes, die der Rotation entgegenwirken, damit der Text lesbar bleibt */
+@keyframes counteract-rotation {
+    from { transform: translateX(-50%) rotate(0deg); }
+    to { transform: translateX(-50%) rotate(-360deg); }
+}
+
+
+/* ================================================================== */
+/* ===         INTERAKTIVE PRELOADER-ELEMENTE & PANELS            === */
+/* ================================================================== */
+
+/* Der Overlay, der den Hintergrund abdunkelt, wenn ein Panel offen ist. */
+#info-panel-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(10, 25, 10, 0.8);
+    backdrop-filter: blur(5px);
+    z-index: 10001; /* Liegt über ALLEM anderen */
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+#info-panel-overlay.visible {
+    opacity: 1;
+}
+
+/* Das eigentliche Info-Panel, das in der Mitte erscheint. */
+.info-panel {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 90%;
+    max-width: 600px;
+    background-color: rgba(12, 12, 12, 0.7);
+    border: 1px solid #4caf4f55;
+    box-shadow: 0 0 30px rgba(76, 175, 80, 0.2), inset 0 0 10px rgba(76, 175, 80, 0.1);
+    border-radius: 8px;
+    color: #4CAF50;
+    font-family: 'Courier New', Courier, monospace;
+    transform: translate(-50%, -50%) scale(0.8); /* Startet klein */
+    opacity: 0;
+    transition: transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1), opacity 0.5s ease;
+    display: none; /* Standardmäßig komplett versteckt */
+}
+
+.info-panel.visible {
+    display: block;
+    transform: translate(-50%, -50%) scale(1); /* Fährt auf volle Größe */
+    opacity: 1;
+    animation: subtle-float 8s infinite ease-in-out; /* Coole Schwebe-Animation */
+}
+
+/* Header-Bereich des Panels */
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: #4caf4f11;
+    border-bottom: 1px solid #4caf4f55;
+}
+
+.close-panel-btn {
+    background: none;
+    border: 1px solid transparent;
+    color: #9E9E9E;
+    font-size: 1rem;
+    cursor: none;
+    transition: all 0.3s;
+}
+.close-panel-btn:hover {
+    color: #f03355;
+    border-color: #f03355;
+    box-shadow: 0 0 10px #f03355;
+}
+
+/* Inhaltsbereich des Panels */
+.panel-content {
+    padding: 20px;
+}
+.content-line {
+    margin-bottom: 10px;
+}
+
+/* Keyframes für die leichte Schwebe-Animation des Panels */
+@keyframes subtle-float {
+    0% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+    25% { transform: translate(-50.5%, -49.5%) scale(1.01) rotate(0.2deg); }
+    50% { transform: translate(-50%, -51%) scale(1) rotate(0deg); }
+    75% { transform: translate(-49.5%, -49.5%) scale(1.01) rotate(-0.2deg); }
+    100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+}
+
+/* Hilfsklasse zum Verstecken des Overlays */
+.hidden {
+    display: none !important;
+    pointer-events: none;
 }
